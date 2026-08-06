@@ -85,3 +85,140 @@
 // =============================================================================
 
 
+const readlineSync = require("readline-sync");
+
+// Array to store student records
+let students = [];
+
+// -----------------------------------------------------------------------------
+// Function to Add a Student
+// -----------------------------------------------------------------------------
+function addStudent() {
+    let name = readlineSync.question("Student name: ");
+    let id = readlineSync.questionInt("Student ID: ");
+
+    let numberOfScores = readlineSync.questionInt("How many scores? ");
+
+    let scores = [];
+
+    for (let i = 0; i < numberOfScores; i++) {
+        let score = readlineSync.questionFloat("Enter score " + (i + 1) + ": ");
+        scores.push(score);
+    }
+
+    let student = {
+        name: name,
+        id: id,
+        scores: scores
+    };
+
+    students.push(student);
+
+    console.log('Student "' + name + '" added successfully.');
+}
+
+// -----------------------------------------------------------------------------
+// Function to Calculate Average Score
+// -----------------------------------------------------------------------------
+function calculateAverage(scores) {
+    let sum = 0;
+
+    for (let i = 0; i < scores.length; i++) {
+        sum += scores[i];
+    }
+
+    return sum / scores.length;
+}
+
+// -----------------------------------------------------------------------------
+// Function to Display All Students
+// -----------------------------------------------------------------------------
+function displayStudents() {
+    if (students.length === 0) {
+        console.log("No student records available.");
+        return;
+    }
+
+    console.log("\n---------------------------------------------------------------");
+    console.log("Name\t\tID\t\tScores\t\tAverage");
+    console.log("---------------------------------------------------------------");
+
+    for (let i = 0; i < students.length; i++) {
+        let student = students[i];
+
+        console.log(
+            student.name + "\t" +
+            student.id + "\t" +
+            student.scores.join(", ") + "\t" +
+            calculateAverage(student.scores).toFixed(2)
+        );
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Function to Find a Student and Display Average Score
+// -----------------------------------------------------------------------------
+function findStudentAverage() {
+    let id = readlineSync.questionInt("Enter student ID: ");
+
+    let found = false;
+
+    for (let i = 0; i < students.length; i++) {
+        if (students[i].id === id) {
+            console.log(
+                students[i].name +
+                "'s average score: " +
+                calculateAverage(students[i].scores).toFixed(2)
+            );
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        console.log("Error: Student ID not found.");
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Main Function
+// -----------------------------------------------------------------------------
+function main() {
+    let choice;
+
+    do {
+        console.log("\n================================");
+        console.log("   STUDENT RECORD SYSTEM MENU");
+        console.log("================================");
+        console.log("1. Add student");
+        console.log("2. Display all students");
+        console.log("3. Calculate average score");
+        console.log("4. Quit");
+
+        choice = readlineSync.questionInt("Enter your choice (1-4): ");
+
+        switch (choice) {
+            case 1:
+                addStudent();
+                break;
+
+            case 2:
+                displayStudents();
+                break;
+
+            case 3:
+                findStudentAverage();
+                break;
+
+            case 4:
+                console.log("Goodbye!");
+                break;
+
+            default:
+                console.log("Error: Invalid choice. Please enter a number from 1 to 4.");
+        }
+
+    } while (choice !== 4);
+}
+
+main();
